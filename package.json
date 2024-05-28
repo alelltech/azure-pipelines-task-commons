@@ -1,0 +1,33 @@
+{
+  "name": "@alelltech/azure-pipelines-task-commons",
+  "version": "1.0.0",
+  "author": "alleltech",
+  "description": "Commons functions for azure pipelines custom tasks",
+  "license": "MIT",
+  "scripts": {
+    "release": "standard-version -a --releaseCommitMessageFormat \"chore(release): {{currentTag}}\" ",
+    "release:full": "npm run release && git push --follow-tags",
+    "compile": "tsc",
+    "debug": "ts-node ",
+    "debug:test": "mocha --require ts-node/register ",
+    "test": "tsc && mocha **/_suite.js",
+    "coverage": "tsc && nyc --reporter=html --reporter=text --reporter=cobertura mocha --reporter mocha-junit-reporter **/_suite.js"
+  },
+  "peerDependencies": {
+    "azure-pipelines-task-lib": "~5.0.0-preview.0",
+    "azure-pipelines-tool-lib": "~2.0.7"
+  },
+  "devDependencies": {
+    "standard-version": "^9.5.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.5",
+    "mocha": "^10.2.0",
+    "mocha-junit-reporter": "2.2.1",
+    "nyc": "15.1.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.1.6"
+  },
+  "engines": {
+    "node": ">=12"
+  }
+}
