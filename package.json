@@ -1,10 +1,15 @@
 {
   "name": "@alell/azure-pipelines-task-commons",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "alleltech",
   "description": "Commons functions for azure pipelines custom tasks",
   "license": "MIT",
   "private": false,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts"
+  },
   "scripts": {
     "release": "standard-version -a --releaseCommitMessageFormat \"chore(release): {{currentTag}}\" ",
     "release:full": "npm run release && git push --follow-tags",
