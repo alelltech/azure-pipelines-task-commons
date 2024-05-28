@@ -1,7 +1,7 @@
 {
   "name": "@alell/azure-pipelines-task-commons",
-  "version": "1.0.9",
-  "author": "alleltech",
+  "version": "1.0.10",
+  "author": "Alan S. Ferreira",
   "description": "Commons functions for azure pipelines custom tasks",
   "license": "MIT",
   "private": false,
@@ -11,6 +11,10 @@
     "access": "public",
     "main": "dist/index.js",
     "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alelltech/azure-pipelines-task-commons.git"
   },
   "scripts": {
     "release": "standard-version -a --releaseCommitMessageFormat \"chore(release): {{currentTag}}\" ",
