@@ -1,6 +1,6 @@
 {
   "name": "@alell/azure-pipelines-task-commons",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "alleltech",
   "description": "Commons functions for azure pipelines custom tasks",
   "license": "MIT",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "release": "standard-version -a --releaseCommitMessageFormat \"chore(release): {{currentTag}}\" ",
-    "release:full": "npm run release && git push --follow-tags",
+    "release:full": "npm run release && npm i && git add . && git commit --reuse-message=HEAD && git push --follow-tags",
     "compile": "tsc",
     "debug": "ts-node ",
     "debug:test": "mocha --require ts-node/register ",
