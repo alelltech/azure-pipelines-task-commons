@@ -1,6 +1,6 @@
 {
   "name": "@alelltech/azure-pipelines-task-commons",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "alleltech",
   "description": "Commons functions for azure pipelines custom tasks",
   "license": "MIT",
