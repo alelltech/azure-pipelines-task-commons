@@ -26,9 +26,9 @@ export const getContent = (sourceType: SourceType, source: string) => {
   return handle(source);
 }
 
-export const setContent = async (destType: SourceType, dest: string, content: Buffer | string) => {
+export const setContent = async (destType: DestType, dest: string, content: Buffer | string) => {
   const handle = setContentHandles[destType] ?? getContentHandles.text
-  if(setContent == setContentHandles.echo && destType != 'text') {
+  if(setContent == setContentHandles.echo && destType != 'echo') {
     _warning(`Source Type '${destType}' is not implemented, using default 'text'.`);
   }
   handle(dest, content);
