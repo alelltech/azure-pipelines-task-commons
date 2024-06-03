@@ -58,9 +58,7 @@ export const executeScript = async (
 ) => {
   for (const { kind, dest, script } of queries) {
     const execQuery = execQueryMap[kind] ?? execQueryMap.echo;
-    let p = script.trim();
-    if (!p.startsWith('${{')) p = `$\{\{${p}`;
-    if (!p.endsWith('}}')) p = `${p}\}\}`;
+    const p = script.trim();
 
     const result = await resolveScript(p, { kind, dest, script });
     if (!result) {
