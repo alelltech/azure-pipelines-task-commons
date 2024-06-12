@@ -1,4 +1,4 @@
-import { getTaskVariable } from "azure-pipelines-task-lib"
+import { getTaskVariable, getVariable } from "azure-pipelines-task-lib"
 
 // export enum VariablesNames {
 //   ['Agent.BuildDirectory'] = 'AGENT_BUILDDIRECTORY',
@@ -921,5 +921,5 @@ export type variablesMap = {
 }
 
 export function getVar(name: keyof variablesMap) {
-  return getTaskVariable(name);
+  return getVariable(name);
 }
