@@ -48,16 +48,18 @@ export const getHandles: Record<
     ),
   var: (varname, parsed) => Promise.resolve(getVariable(parsed.hostname) ?? ""),
   http: async (url, parsed) => {
-    const res = await axios.get(url, {
+    const res = await axios.get(parsed.toString(), {
       timeout: 1000,
       transformResponse: (x) => x,
+      validateStatus: () => true,
     });
     return res.data;
   },
   https: async (url, parsed) => {
-    const res = await axios.get(url, {
+    const res = await axios.get(parsed.toString(), {
       timeout: 1000,
       transformResponse: (x) => x,
+      validateStatus: () => true,
     });
     return res.data;
   },
@@ -146,6 +148,8 @@ export const getContent = (sourceType: SourceType, source: string) => {
  */
 export const get = async (sourceUri: string): Promise<string> => {
   try {
+    if (!/^ {0,}([^: \n]+):\/\//i.test(sourceUri)) return sourceUri;
+
     const parsedUri = new URL(sourceUri);
     const protocol = parsedUri.protocol.slice(0, -1);
 
@@ -157,8 +161,13 @@ export const get = async (sourceUri: string): Promise<string> => {
       return Promise.resolve(sourceUri);
     }
 
-    return await handle(sourceUri, parsedUri);
+    return await handle(
+      `${parsedUri.host}${parsedUri.pathname}`,
+      parsedUri,
+      sourceUri
+    );
   } catch (error) {
+    _error(`Error parsing get(sourceUri): '${sourceUri}'`);
     _error(error?.data ?? error);
     return Promise.resolve(sourceUri);
   }
@@ -214,8 +223,9 @@ export const set = async (targetUri: string, content: Buffer | string) => {
       await setHandles.echo(targetUri, parsedUri, content);
     }
 
-    await handle(parsedUri, content);
+    await handle(`${parsedUri.host}${parsedUri.pathname}`, parsedUri, content);
   } catch (error) {
+    _error(`Error parsing set(sourceUri): '${targetUri}'`);
     _error(error?.data ?? error);
     await setHandles.echo(targetUri, undefined, content);
   }

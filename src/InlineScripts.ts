@@ -35,16 +35,51 @@ export function parseScript(fullScript: string): Query[] {
 
 export function parse(fullScript: string): ParsedQuery[] {
   const result: ParsedQuery[] = [];
-  const regex =
-    /(((var|file|out) {1,}([^=]+)=([^\|\n]+))|((echo) {1,}([^\|\n]+)))( {0,}\| {0,}([^\n]+))?|((([^: \n]+):\/\/([^ ]+))) {1,}=([^\|\n]+)( {0,}\| {0,}([^\n]+))?/gm;
+  // const echoRegex =
+
+  let sanetizedScript = fullScript + "\n";
+  sanetizedScript = sanetizedScript.replace(/^ {0,}#[^\n]+/gm, "");
 
   let m;
+  const defaultregex =
+    /^ {0,}([^ :\n]+) {1,}([^=\n]+)=([^\|\n]+)( {0,}\| {0,}([^\n]+))?$/gm;
+  while ((m = defaultregex.exec(sanetizedScript)) !== null) {
+    const kind = (m[1] || "").trim();
+    const target: string = (m[2] || "").trim();
+    const query: string = (m[3] || "").trim();
+    const pipes: string = (m[5] || "").trim();
 
-  while ((m = regex.exec(fullScript)) !== null) {
-    const kind = (m[3] || m[7] || m[13] || "").trim();
-    const target: string = (m[4] || m[14] || "").trim();
-    const script: string = (m[5] || m[8] || m[15]).trim();
-    const pipes: string = (m[10] || m[17] || "").trim();
+    result.push({
+      kind,
+      target,
+      query,
+      pipes: pipes.split("|").map((p) => p.trim()),
+    });
+  }
+
+  const echoregex =
+    /^ {0,}([^ :\n]+) {1,}([^\|\n=]+)( {0,}\| {0,}([^\n]+))?$/gm;
+  while ((m = echoregex.exec(sanetizedScript)) !== null) {
+    const kind = (m[1] || "").trim();
+    const target: string = "";
+    const script: string = (m[2] || "").trim();
+    const pipes: string = (m[4] || "").trim();
+
+    result.push({
+      kind,
+      target,
+      query: script,
+      pipes: pipes.split("|").map((p) => p.trim()),
+    });
+  }
+
+  const uriregex =
+    /^ {0,}((([^: \n]+):\/\/([^ ]+))) {1,}=([^\|\n]+)( {0,}\| {0,}([^\n]+))?$/gm;
+  while ((m = uriregex.exec(sanetizedScript)) !== null) {
+    const kind = (m[3] || "").trim();
+    const target: string = (m[4] || "").trim();
+    const script: string = (m[5] || "").trim();
+    const pipes: string = (m[7] || "").trim();
 
     result.push({
       kind,
