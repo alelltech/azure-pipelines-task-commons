@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/alelltech/azure-pipelines-task-commons/compare/v2.1.1...v2.2.0) (2024-08-07)
+
+
+### Features
+
+* add pipes parse ([d179712](https://github.com/alelltech/azure-pipelines-task-commons/commit/d179712303ff556beff6124f26ee9ee13cf297c3))
+
+
+### Others
+
+* **release:** 2.1.1 ([68a408a](https://github.com/alelltech/azure-pipelines-task-commons/commit/68a408a03d975b62e2a8c2ffc38bd18c1ea7ec7c))
+
 ### [2.1.1](https://github.com/alelltech/azure-pipelines-task-commons/compare/v2.1.0...v2.1.1) (2024-08-07)
 
 
