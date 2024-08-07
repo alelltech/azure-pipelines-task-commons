@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import { getRuntimePath } from "../RuntimeUtil";
-import { executeScript, parseScript } from "../InlineScripts";
+import { execute, executeScript, parse, parseScript } from "../InlineScripts";
 import { json } from "stream/consumers";
 import { get } from "../SourceContent";
 
@@ -53,6 +53,44 @@ describe("InlineScripts Suite", () => {
         '[{"kind":"var","dest":"NAME","script":".metadata.name | downcase"},{"kind":"var","dest":"KIND","script":".kind"},{"kind":"echo","dest":"","script":".kind | uppercase"},{"kind":"file","dest":"./bar/annotations.json","script":".metadata.annotations"},{"kind":"out","dest":"outTest","script":".emptyResultTest | uppercase"},{"kind":"secret","dest":"secretTest","script":".emptyResultTest | uppercase"},{"kind":"var","dest":"DOC_TWO_NAME","script":"$[1].metadata.name | downcase"}]'
     );
   });
+
+  it("parse", async () => {
+    process.env.EXT = "ts";
+    const runtime = getRuntimePath("");
+    const queries = parse(
+      [
+        `var NAME    =      .metadata.name | downcase`,
+        `var KIND    =    .kind`,
+        `echo      .kind | uppercase`,
+        `file  ./bar/annotations.json  = .metadata.annotations`,
+        `out outTest   =   .emptyResultTest | uppercase`,
+        `secret secretTest =     .emptyResultTest | uppercase`,
+        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
+        "# Extract results to variables",
+        "var NAME = .metadata.name | downcase",
+        "var KIND = .kind",
+        "",
+        "# Extract results to variables with ;isOutput=true flag",
+        "out KIND = .kind",
+        "# Just print results",
+        "echo .kind",
+        "# Extract results to JSON file",
+        "file ./foo/bar.json = .metadata.annotations",
+        "var://teste = .metadata.annotations",
+        "file://./teste.txt = .metadata.annotations",
+        "http://hostname.com.br/users/teste?param=x& = .metadata.annotations",
+        "$var://teste = [class='teste']",
+        "var://teste = .metadata.annotations",
+      ].join("\n")
+    );
+
+    assert(queries, "queries must be defined");
+    assert(queries.length === 17, "queries must have 17 items.");
+    assert(
+      JSON.stringify(queries) ===
+        `[{"kind":"var","dest":"NAME","script":".metadata.name | downcase"},{"kind":"var","dest":"KIND","script":".kind"},{"kind":"echo","dest":"","script":".kind | uppercase"},{"kind":"file","dest":"./bar/annotations.json","script":".metadata.annotations"},{"kind":"out","dest":"outTest","script":".emptyResultTest | uppercase"},{"kind":"secret","dest":"secretTest","script":".emptyResultTest | uppercase"},{"kind":"var","dest":"DOC_TWO_NAME","script":"$[1].metadata.name | downcase"},{"kind":"var","dest":"NAME","script":".metadata.name | downcase"},{"kind":"var","dest":"KIND","script":".kind"},{"kind":"out","dest":"KIND","script":".kind"},{"kind":"echo","dest":"","script":".kind"},{"kind":"file","dest":"./foo/bar.json","script":".metadata.annotations"},{"kind":"var","dest":"teste","script":".metadata.annotations"},{"kind":"file","dest":"./teste.txt","script":".metadata.annotations"},{"kind":"http","dest":"hostname.com.br/users/teste?param=x&","script":".metadata.annotations"},{"kind":"$var","dest":"teste","script":"[class='teste']"},{"kind":"var","dest":"teste","script":".metadata.annotations"}]`
+    );
+  });
   // it('executeScript', async () => {
   //   process.env.EXT = 'ts';
   //   const runtime = getRuntimePath('');
@@ -73,6 +111,45 @@ describe("InlineScripts Suite", () => {
   //   });
   //   assert(counter === queries.length)
   // })
+
+  it("execute", async () => {
+    process.env.EXT = "ts";
+    const runtime = getRuntimePath("");
+    const queries = parse(
+      [
+        `var NAME    =      .metadata.name | downcase`,
+        `var KIND    =    .kind`,
+        `echo      .kind | uppercase`,
+        `file  ./bar/annotations.json  = .metadata.annotations`,
+        `out outTest   =   .emptyResultTest | uppercase`,
+        `secret secretTest =     .emptyResultTest | uppercase`,
+        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
+        "# Extract results to variables",
+        "var NAME = .metadata.name | downcase",
+        "var KIND = .kind",
+        "",
+        "# Extract results to variables with ;isOutput=true flag",
+        "out KIND = .kind",
+        "# Just print results",
+        "echo .kind",
+        "# Extract results to JSON file",
+        "file ./foo/bar.json = .metadata.annotations",
+        "var://teste = .metadata.annotations",
+        "file://./teste.txt = .metadata.annotations",
+        "http://hostname.com.br/users/teste?param=x& = .metadata.annotations",
+        "$var://teste = [class='teste']",
+        "var://teste = .metadata.annotations",
+      ].join("\n")
+    );
+
+    let counter = 0;
+    await execute(queries, async (query, _parsedQuery) => {
+      counter += 1;
+      console.log(_parsedQuery);
+      return `EXECUTED: \n ${query}`;
+    });
+    assert(counter === queries.length);
+  });
 });
 // describe("SourceContent Suite", () => {
 //   it("get", (done) => {
