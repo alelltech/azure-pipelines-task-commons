@@ -48,20 +48,14 @@ export const getHandles: Record<
     ),
   var: (varname, parsed) => Promise.resolve(getVariable(parsed.hostname) ?? ""),
   http: async (url, parsed) => {
-    try {
-      const res = await axios.get(url, {
-        httpAgent: new Agent({ keepAlive: false, timeout: 1000 }),
-        timeout: 1000,
-        transformResponse: (x) => x,
-      });
-      return res.data;
-    } catch (error) {
-      return "";
-    }
+    const res = await axios.get(url, {
+      timeout: 1000,
+      transformResponse: (x) => x,
+    });
+    return res.data;
   },
   https: async (url, parsed) => {
     const res = await axios.get(url, {
-      httpsAgent: new Agent({ keepAlive: false, timeout: 1000 }),
       timeout: 1000,
       transformResponse: (x) => x,
     });
@@ -105,11 +99,15 @@ export const setHandles: Record<
   echo: (_, parsedUrl, content) =>
     Promise.resolve(console.log(content.toString("utf-8"))),
   http: async (url, parsed) => {
-    const res = await axios.post(url);
+    const res = await axios.post(url, {
+      timeout: 1000,
+    });
     return res.data;
   },
   https: async (url, parsed) => {
-    const res = await axios.post(url);
+    const res = await axios.post(url, {
+      timeout: 1000,
+    });
     return res.data;
   },
 };
