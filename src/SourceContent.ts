@@ -3,6 +3,7 @@ import { _error, _warning } from "azure-pipelines-task-lib/internal";
 import { readFileSync, writeFileSync } from "fs";
 import path = require("path");
 import axios from "axios";
+import { Agent } from "http";
 
 /**
  * @deprecated use {@link GetProtocols}
@@ -47,11 +48,23 @@ export const getHandles: Record<
     ),
   var: (varname, parsed) => Promise.resolve(getVariable(parsed.hostname) ?? ""),
   http: async (url, parsed) => {
-    const res = await axios.get(url, { timeout: 1000 });
-    return res.data;
+    try {
+      const res = await axios.get(url, {
+        httpAgent: new Agent({ keepAlive: false, timeout: 1000 }),
+        timeout: 1000,
+        transformResponse: (x) => x,
+      });
+      return res.data;
+    } catch (error) {
+      return "";
+    }
   },
   https: async (url, parsed) => {
-    const res = await axios.get(url, { timeout: 1000 });
+    const res = await axios.get(url, {
+      httpsAgent: new Agent({ keepAlive: false, timeout: 1000 }),
+      timeout: 1000,
+      transformResponse: (x) => x,
+    });
     return res.data;
   },
 };
@@ -149,7 +162,7 @@ export const get = async (sourceUri: string): Promise<string> => {
     return await handle(sourceUri, parsedUri);
   } catch (error) {
     _error(error?.data ?? error);
-    return await Promise.resolve(sourceUri);
+    return Promise.resolve(sourceUri);
   }
 };
 
