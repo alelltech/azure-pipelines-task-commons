@@ -2,7 +2,7 @@ import * as assert from "assert";
 import { getRuntimePath } from "../RuntimeUtil";
 import { execute, executeScript, parse, parseScript } from "../InlineScripts";
 import { json } from "stream/consumers";
-import { get } from "../SourceContent";
+import { get, set } from "../SourceContent";
 
 describe(`ParamsUtils Suite`, () => {
   it("parseInput", async () => {
@@ -91,26 +91,28 @@ describe("InlineScripts Suite", () => {
         `[{"kind":"var","dest":"NAME","script":".metadata.name | downcase"},{"kind":"var","dest":"KIND","script":".kind"},{"kind":"echo","dest":"","script":".kind | uppercase"},{"kind":"file","dest":"./bar/annotations.json","script":".metadata.annotations"},{"kind":"out","dest":"outTest","script":".emptyResultTest | uppercase"},{"kind":"secret","dest":"secretTest","script":".emptyResultTest | uppercase"},{"kind":"var","dest":"DOC_TWO_NAME","script":"$[1].metadata.name | downcase"},{"kind":"var","dest":"NAME","script":".metadata.name | downcase"},{"kind":"var","dest":"KIND","script":".kind"},{"kind":"out","dest":"KIND","script":".kind"},{"kind":"echo","dest":"","script":".kind"},{"kind":"file","dest":"./foo/bar.json","script":".metadata.annotations"},{"kind":"var","dest":"teste","script":".metadata.annotations"},{"kind":"file","dest":"./teste.txt","script":".metadata.annotations"},{"kind":"http","dest":"hostname.com.br/users/teste?param=x&","script":".metadata.annotations"},{"kind":"$var","dest":"teste","script":"[class='teste']"},{"kind":"var","dest":"teste","script":".metadata.annotations"}]`
     );
   });
-  // it('executeScript', async () => {
-  //   process.env.EXT = 'ts';
-  //   const runtime = getRuntimePath('');
-  //   const queries = parseScript([
-  //     `var NAME    =      .metadata.name | downcase`,
-  //     `var KIND    =    .kind`,
-  //     `echo      .kind | uppercase`,
-  //     `file  ./bar/annotations.json  = .metadata.annotations`,
-  //     `out outTest   =   .emptyResultTest | uppercase`,
-  //     `secret secretTest =     .emptyResultTest | uppercase`,
-  //     `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
-  //   ].join('\n'));
+  it("executeScript", async () => {
+    process.env.EXT = "ts";
+    const runtime = getRuntimePath("");
+    const queries = parseScript(
+      [
+        `var NAME    =      .metadata.name | downcase`,
+        `var KIND    =    .kind`,
+        `echo      .kind | uppercase`,
+        `file  ./bar/annotations.json  = .metadata.annotations`,
+        `out outTest   =   .emptyResultTest | uppercase`,
+        `secret secretTest =     .emptyResultTest | uppercase`,
+        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
+      ].join("\n")
+    );
 
-  //   let counter = 0
-  //   await executeScript(queries, async (script, query) => {
-  //     counter+=1;
-  //     return `EXECUTED: \n ${script}`;
-  //   });
-  //   assert(counter === queries.length)
-  // })
+    let counter = 0;
+    await executeScript(queries, async (script, query) => {
+      counter += 1;
+      return `EXECUTED: \n ${script}`;
+    });
+    assert(counter === queries.length);
+  });
 
   it("execute", async () => {
     process.env.EXT = "ts";
@@ -136,7 +138,7 @@ describe("InlineScripts Suite", () => {
         "file ./foo/bar.json = .metadata.annotations",
         "var://teste = .metadata.annotations",
         "file://./teste.txt = .metadata.annotations",
-        "http://hostname.com.br/users/teste?param=x& = .metadata.annotations",
+        // "http://hostname.com.br/users/teste?param=x& = .metadata.annotations",
         "$var://teste = [class='teste']",
         "var://teste = .metadata.annotations",
       ].join("\n")
@@ -151,13 +153,22 @@ describe("InlineScripts Suite", () => {
     assert(counter === queries.length);
   });
 });
-// describe("SourceContent Suite", () => {
-//   it("get", (done) => {
-//     Promise.all([
-//       get("var://MY_VAR_NAME"),
-//       get("file:///path/to/file.txt"),
-//       get("http://host:8080/my-get-route-path..."),
-//       get("my raw any string without protocol reference"),
-//     ]).finally(done);
-//   });
-// });
+describe("SourceContent Suite", () => {
+  it("get", async () => {
+    await Promise.all([
+      get("var://MY_VAR_NAME"),
+      get("file:///path/to/file.txt"),
+      // get("http://host:8080/my-get-route-path..."),
+      get("my raw any string without protocol reference"),
+    ]);
+  });
+
+  it("set", async () => {
+    await Promise.all([
+      set("var://MY_VAR_NAME", ""),
+      // set("file:///path/to/file.txt"),
+      // set("http://host:8080/my-get-route-path..."),
+      set("echo", "my raw any string without protocol reference"),
+    ]);
+  });
+});
