@@ -44,11 +44,13 @@ export function parse(fullScript: string): ParsedQuery[] {
     const kind = (m[3] || m[7] || m[13] || "").trim();
     const target: string = (m[4] || m[14] || "").trim();
     const script: string = (m[5] || m[8] || m[15]).trim();
+    const pipes: string = (m[10] || m[17] || "").trim();
 
     result.push({
       kind,
       target,
       query: script,
+      pipes: pipes.split("|").map((p) => p.trim()),
     });
   }
 
@@ -97,6 +99,7 @@ type ParsedQuery = {
   kind: string;
   target: string;
   query: string;
+  pipes: string[];
 };
 
 /**
@@ -125,11 +128,11 @@ export const execute = async (
   parsedQueries: ParsedQuery[],
   evaluateScript: (script: string, query: ParsedQuery) => Promise<any>
 ) => {
-  for (const { kind, target, query } of parsedQueries) {
+  for (const { kind, target, query, pipes } of parsedQueries) {
     const q = query.trim();
 
     console.debug(`${kind}://${target} = ${q}`);
-    const result = await evaluateScript(q, { kind, target, query: q });
+    const result = await evaluateScript(q, { kind, target, query: q, pipes });
     if (!result) {
       _warning(`Script '${query}' has not results!`);
       continue;
