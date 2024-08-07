@@ -26,15 +26,16 @@
     "coverage": "tsc && nyc --reporter=html --reporter=text --reporter=cobertura mocha --reporter mocha-junit-reporter **/_suite.js"
   },
   "peerDependencies": {
-    "azure-pipelines-task-lib": "*"
+    "azure-pipelines-task-lib": "*",
+    "axios": "*"
   },
   "devDependencies": {
-    "standard-version": "^9.5.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.5",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "2.2.1",
     "nyc": "15.1.0",
+    "standard-version": "^9.5.0",
     "ts-node": "10.9.2",
     "typescript": "5.1.6"
   },
