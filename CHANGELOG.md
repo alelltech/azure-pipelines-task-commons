@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/alelltech/azure-pipelines-task-commons/compare/v2.0.1...v2.1.0) (2024-08-07)
+
+
+### Features
+
+* upgrade InlineScripts functions ([9884491](https://github.com/alelltech/azure-pipelines-task-commons/commit/988449175f541bb8d1d37cfc5ed84d6c8b1e96d1))
+
+
+### Others
+
+* **release:** 2.0.1 ([ed16441](https://github.com/alelltech/azure-pipelines-task-commons/commit/ed16441b4613917a62feeb5ff4ee4fb4393112fe))
+
 ### [2.0.1](https://github.com/alelltech/azure-pipelines-task-commons/compare/v2.0.0...v2.0.1) (2024-08-07)
 
 
