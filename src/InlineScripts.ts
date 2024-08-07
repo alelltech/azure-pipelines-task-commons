@@ -36,7 +36,7 @@ export function parseScript(fullScript: string): Query[] {
 export function parse(fullScript: string): ParsedQuery[] {
   const result: ParsedQuery[] = [];
   const regex =
-    /(((var|file|out|secret) {1,}([^=]+)=([^\n]+))|((echo) {1,}([^\n]+)))( {0,} {0,}([^\n]+))?|((([^: \n]+):\/\/([^ ]+))) {1,}=([^\n]+)/gm;
+    /(((var|file|out) {1,}([^=]+)=([^\|\n]+))|((echo) {1,}([^\|\n]+)))( {0,}\| {0,}([^\n]+))?|((([^: \n]+):\/\/([^ ]+))) {1,}=([^\|\n]+)( {0,}\| {0,}([^\n]+))?/gm;
 
   let m;
 
