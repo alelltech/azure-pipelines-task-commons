@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/alelltech/azure-pipelines-task-commons/compare/v1.1.5...v2.0.0) (2024-08-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade get / set contents to use uri standards
+
+### Features
+
+* upgrade get / set contents to use uri standards ([52341d7](https://github.com/alelltech/azure-pipelines-task-commons/commit/52341d730e09d9033cab5b112ca340cee356f21e))
+
+
+### Others
+
+* **release:** 1.1.5 ([83009c4](https://github.com/alelltech/azure-pipelines-task-commons/commit/83009c4c035705461045150efedb17024faf3be2))
+
 ### [1.1.5](https://github.com/alelltech/azure-pipelines-task-commons/compare/v1.1.4...v1.1.5) (2024-06-12)
 
 
