@@ -14,7 +14,7 @@ import {
 export function parseScript(fullScript: string): Query[] {
   const result = [];
   const regex =
-    /(((var|file|out|secret) {1,}([^=]+)=([^\n]+))|((echo) {1,}([^\n]+)))( {0,} {0,}([^\n]+))?/gm;
+    /(((var|file|out|secret) {1,}([^= ]+) {0,}= {0,}([^\n]+))|((echo) {1,}([^\n]+)))( {0,} {0,}([^\n]+))?/gm;
 
   let m;
 
@@ -42,7 +42,7 @@ export function parse(fullScript: string): ParsedQuery[] {
 
   let m;
   const defaultregex =
-    /^ {0,}([^ :\n]+) {1,}([^=\n]+)=([^\|\n]+)( {0,}\| {0,}([^\n]+))?$/gm;
+    /^ {0,}([^ :\n]+) {1,}([^=\n ]+) {0,}= {0,}([^\|\n]+)( {0,}\| {0,}([^\n]+))?$/gm;
   while ((m = defaultregex.exec(sanetizedScript)) !== null) {
     const kind = (m[1] || "").trim();
     const target: string = (m[2] || "").trim();
@@ -74,7 +74,7 @@ export function parse(fullScript: string): ParsedQuery[] {
   }
 
   const uriregex =
-    /^ {0,}((([^: \n]+):\/\/([^ ]+))) {1,}=([^\|\n]+)( {0,}\| {0,}([^\n]+))?$/gm;
+    /^ {0,}((([^: \n]+):\/\/([^ ]+))) {1,}= {0,}([^\|\n]+)( {0,}\| {0,}([^\n]+))?$/gm;
   while ((m = uriregex.exec(sanetizedScript)) !== null) {
     const kind = (m[3] || "").trim();
     const target: string = (m[4] || "").trim();
