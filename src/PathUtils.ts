@@ -16,7 +16,7 @@ import * as path from 'path';
 export const pathLookUp = (entity: string, from: string = __dirname) => {
   let p = path.resolve(from, entity);
   for (let i = 0; i < 4; i++) {
-    if(existsSync(p)) return JSON.parse(p);
+    if(existsSync(p)) return p;
     p = path.resolve(p, '..', entity);
   }
 }
