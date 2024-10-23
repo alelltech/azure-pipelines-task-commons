@@ -7,12 +7,23 @@
 import * as path from 'path';
 
 export const { EXT } = {
-  ...{EXT: 'js'},
+  ...{
+    /** @deprecated */
+    EXT: 'js'
+  },
   ...process.env,
 } ;
+/**
+ * @deprecated
+ */
 export const getExt = () => {
   return process.env.EXT ?? 'js';
 }
+/**
+ * @deprecated
+ * @param old
+ * @returns
+ */
 export const getRuntimePath = (old: string) => {
   if( getExt() === 'ts'){
     return path.resolve(process.cwd(), 'node_modules/.bin/ts-node');
