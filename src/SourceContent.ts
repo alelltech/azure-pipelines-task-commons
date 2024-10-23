@@ -1,5 +1,4 @@
-import { getVariable, setVariable } from "azure-pipelines-task-lib";
-import { _error, _warning } from "azure-pipelines-task-lib/internal";
+import { getVariable, setVariable, warning } from "azure-pipelines-task-lib";
 import { readFileSync, writeFileSync } from "fs";
 import path = require("path");
 import axios from "axios";
@@ -123,7 +122,7 @@ export const setHandles: Record<
 export const getContent = (sourceType: SourceType, source: string) => {
   const handle = getContentHandles[sourceType] ?? getContentHandles.text;
   if (handle == getContentHandles.text && sourceType != "text") {
-    _warning(
+    warning(
       `Source Type '${sourceType}' is not implemented, using default 'text'.`
     );
   }
@@ -155,7 +154,7 @@ export const get = async (sourceUri: string): Promise<string> => {
 
     const handle = getHandles[protocol];
     if (!handle) {
-      _warning(
+      warning(
         `Source Type '${protocol}' is not implemented, using default 'text', IF YOU REALY WANT TO USE RAW TEXT DO NOT USE URI sintax.`
       );
       return Promise.resolve(sourceUri);
@@ -167,8 +166,9 @@ export const get = async (sourceUri: string): Promise<string> => {
       sourceUri
     );
   } catch (error) {
-    _error(`Error parsing get(sourceUri): '${sourceUri}'`);
-    _error(error?.data ?? error);
+    // warning(`Error parsing get(sourceUri): '${sourceUri}'`);
+    // warning(error?.data ?? error);
+    // DO NOT SEND TOO MANY WARNINGS
     return Promise.resolve(sourceUri);
   }
 };
@@ -186,7 +186,7 @@ export const setContent = async (
 ) => {
   const handle = setContentHandles[destType] ?? getContentHandles.text;
   if (setContent == setContentHandles.echo && destType != "echo") {
-    _warning(
+    warning(
       `Destination Type '${destType}' is not implemented, using default 'text'.`
     );
   }
@@ -217,7 +217,7 @@ export const set = async (targetUri: string, content: Buffer | string) => {
 
     const handle = setHandles[protocol];
     if (!handle) {
-      _warning(
+      warning(
         `Target Type '${protocol}' is not implemented, using default 'echo', IF YOU REALY WANT TO USE RAW TEXT DO NOT USE URI sintax.`
       );
       await setHandles.echo(targetUri, parsedUri, content);
@@ -225,8 +225,8 @@ export const set = async (targetUri: string, content: Buffer | string) => {
 
     await handle(`${parsedUri.host}${parsedUri.pathname}`, parsedUri, content);
   } catch (error) {
-    _error(`Error parsing set(sourceUri): '${targetUri}'`);
-    _error(error?.data ?? error);
+    warning(`Error parsing set(sourceUri): '${targetUri}'`);
+    warning(error?.data ?? error);
     await setHandles.echo(targetUri, undefined, content);
   }
 };
