@@ -10,10 +10,11 @@ import * as path from 'path';
 /**
  * Search for file or directory navigating to up
  * @param entity entity to find
+ * @param from dir to initial search
  * @returns
  */
-export const pathLookUp = (entity: string) => {
-  let p = path.resolve(__dirname, entity);
+export const pathLookUp = (entity: string, from: string = __dirname) => {
+  let p = path.resolve(from, entity);
   for (let i = 0; i < 4; i++) {
     if(existsSync(p)) return JSON.parse(p);
     p = path.resolve(p, '..', entity);
