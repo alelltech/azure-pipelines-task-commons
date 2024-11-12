@@ -89,16 +89,21 @@ export const setHandles: Record<
     content: Buffer | string
   ) => Promise<void>
 > = {
-  file: (file, parsedUrl, content) =>
-    Promise.resolve(writeFileSync(file, content)),
-  var: (varname, parsedUrl, value) =>
-    Promise.resolve(setVariable(varname, value.toString("utf-8"))),
-  out: (varname, parsedUrl, value) =>
-    Promise.resolve(setVariable(varname, value.toString("utf-8"), false, true)),
-  secret: (varname, parsedUrl, value) =>
-    Promise.resolve(setVariable(varname, value.toString("utf-8"), true, false)),
-  echo: (_, parsedUrl, content) =>
-    Promise.resolve(console.log(content.toString("utf-8"))),
+  file: async (file, parsedUrl, content) =>{
+    writeFileSync(file, content)
+  },
+  var: async (varname, parsedUrl, value) => {
+    setVariable(varname, value.toString("utf-8"))
+  },
+  out: async (varname, parsedUrl, value) =>{
+    setVariable(varname, value.toString("utf-8"), false, true)
+  },
+  secret: async (varname, parsedUrl, value) =>{
+    setVariable(varname, value.toString("utf-8"), true, false)
+  },
+  echo: async (_, parsedUrl, content) =>{
+    console.log(content.toString("utf-8"))
+  },
   http: async (url, parsed) => {
     const res = await axios.post(url, {
       timeout: 1000,
@@ -212,6 +217,17 @@ export const setContent = async (
  */
 export const set = async (targetUri: string, content: Buffer | string) => {
   try {
+    if(targetUri === 'echo'){
+      await setHandles.echo(targetUri, undefined, content);
+      return;
+    }
+
+    if(!/(file|var|out|secret|http|https):\/\//.test(targetUri)){
+      warning(`Invalid uri format.`);
+      await setHandles.echo(targetUri, undefined, content);
+      return;
+    }
+
     const parsedUri = new URL(targetUri);
     const protocol = parsedUri.protocol.slice(0, -1);
 
