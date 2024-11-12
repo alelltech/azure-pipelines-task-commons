@@ -245,7 +245,7 @@ export const set = async (targetUri: string, content: Buffer | string, azlib: Az
       await setHandles.echo(targetUri, parsedUri, content, azlib);
     }
 
-    await handle(`${parsedUri.host}${parsedUri.pathname}`, parsedUri, content);
+    await handle(`${parsedUri.host}${parsedUri.pathname}`, parsedUri, content, azlib);
   } catch (error) {
     warning(`Error parsing set(sourceUri): '${targetUri}'`);
     warning(error?.data ?? error);
