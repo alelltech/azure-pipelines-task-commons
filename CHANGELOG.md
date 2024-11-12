@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.15](https://github.com/alelltech/azure-pipelines-task-commons/compare/v2.2.14...v2.2.15) (2024-11-12)
+
+
+### Bug Fixes
+
+* pipes match without cut script from parse scripts ([76bff56](https://github.com/alelltech/azure-pipelines-task-commons/commit/76bff564203076ce40521a7337f116c67c45504d))
+
+
+### Others
+
+* **release:** 2.2.14 ([1b0b31d](https://github.com/alelltech/azure-pipelines-task-commons/commit/1b0b31d77e391b42cc0cffd6cf72064d40d33da7))
+
 ### [2.2.14](https://github.com/alelltech/azure-pipelines-task-commons/compare/v2.2.13...v2.2.14) (2024-11-12)
 
 
