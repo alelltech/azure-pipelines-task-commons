@@ -43,7 +43,7 @@ export function parse(fullScript: string): ParsedQuery[] {
 
   let m;
   const defaultregex =
-    /^ {0,}([^ :\n]+) {1,}([^=\n ]+) {0,}= {0,}([^\|\n]+)( {0,}\| {0,}([^\n]+))?$/gm;
+    /^ {0,}([^ :\n]+) {1,}([^=\n ]+) {0,}= {0,}(([^\|\n]+)( {0,}\| {0,}([^\n]+))?)$/gm;
   while ((m = defaultregex.exec(sanetizedScript)) !== null) {
     const kind = (m[1] || "").trim();
     const target: string = (m[2] || "").trim();
