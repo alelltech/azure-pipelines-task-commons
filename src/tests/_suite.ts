@@ -101,7 +101,7 @@ describe("InlineScripts Suite", () => {
         "var://teste = .metadata.annotations",
         `file://${tempFile} = .metadata.annotations`,
         "https://www.google.com = .metadata.annotations",
-        "var://teste = .metadata.annotations",
+        "var://teste = .metadata.annotations {{ MYVAR | upper | lower }}",
       ].join("\n")
     );
 

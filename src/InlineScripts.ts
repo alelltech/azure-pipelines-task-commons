@@ -75,7 +75,7 @@ export function parse(fullScript: string): ParsedQuery[] {
   }
 
   const uriregex =
-    /^ {0,}((([^: \n]+):\/\/([^ ]+))) {1,}= {0,}([^\|\n]+)( {0,}\| {0,}([^\n]+))?$/gm;
+    /^ {0,}((([^: \n]+):\/\/([^ ]+))) {1,}= {0,}(([^\|\n]+)( {0,}\| {0,}([^\n]+))?)$/gm;
   while ((m = uriregex.exec(sanetizedScript)) !== null) {
     const kind = (m[3] || "").trim();
     const target: string = (m[4] || "").trim();
