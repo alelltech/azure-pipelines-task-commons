@@ -81,28 +81,34 @@ export const setContentHandles: Record<
   echo: (_, content) => Promise.resolve(console.log(content.toString("utf-8"))),
 };
 
+export type AzLib = {
+  setVariable?: typeof setVariable,
+  console?: Console,
+  writeFileSync?: typeof writeFileSync
+}
 export const setHandles: Record<
   SetProtocols,
   (
     dest: string,
     parsedUrl: URL | undefined,
-    content: Buffer | string
+    content: Buffer | string,
+    azlib: AzLib
   ) => Promise<void>
 > = {
-  file: async (file, parsedUrl, content) =>{
-    writeFileSync(file, content)
+  file: async (file, parsedUrl, content, azlib) =>{
+    azlib.writeFileSync(file, content)
   },
-  var: async (varname, parsedUrl, value) => {
-    setVariable(varname, value.toString("utf-8"))
+  var: async (varname, parsedUrl, value, azlib) => {
+    azlib.setVariable(varname, value.toString("utf-8"))
   },
-  out: async (varname, parsedUrl, value) =>{
-    setVariable(varname, value.toString("utf-8"), false, true)
+  out: async (varname, parsedUrl, value, azlib) =>{
+    azlib.setVariable(varname, value.toString("utf-8"), false, true)
   },
-  secret: async (varname, parsedUrl, value) =>{
-    setVariable(varname, value.toString("utf-8"), true, false)
+  secret: async (varname, parsedUrl, value, azlib) =>{
+    azlib.setVariable(varname, value.toString("utf-8"), true, false)
   },
-  echo: async (_, parsedUrl, content) =>{
-    console.log(content.toString("utf-8"))
+  echo: async (_, parsedUrl, content, azlib) =>{
+    azlib.console.log(content.toString("utf-8"))
   },
   http: async (url, parsed) => {
     const res = await axios.post(url, {
@@ -215,16 +221,16 @@ export const setContent = async (
  *
  * @returns
  */
-export const set = async (targetUri: string, content: Buffer | string) => {
+export const set = async (targetUri: string, content: Buffer | string, azlib: AzLib) => {
   try {
     if(targetUri === 'echo'){
-      await setHandles.echo(targetUri, undefined, content);
+      await setHandles.echo(targetUri, undefined, content, azlib);
       return;
     }
 
     if(!/(file|var|out|secret|http|https):\/\//.test(targetUri)){
       warning(`Invalid uri format.`);
-      await setHandles.echo(targetUri, undefined, content);
+      await setHandles.echo(targetUri, undefined, content, azlib);
       return;
     }
 
@@ -236,13 +242,13 @@ export const set = async (targetUri: string, content: Buffer | string) => {
       warning(
         `Target Type '${protocol}' is not implemented, using default 'echo', IF YOU REALY WANT TO USE RAW TEXT DO NOT USE URI sintax.`
       );
-      await setHandles.echo(targetUri, parsedUri, content);
+      await setHandles.echo(targetUri, parsedUri, content, azlib);
     }
 
     await handle(`${parsedUri.host}${parsedUri.pathname}`, parsedUri, content);
   } catch (error) {
     warning(`Error parsing set(sourceUri): '${targetUri}'`);
     warning(error?.data ?? error);
-    await setHandles.echo(targetUri, undefined, content);
+    await setHandles.echo(targetUri, undefined, content, azlib);
   }
 };

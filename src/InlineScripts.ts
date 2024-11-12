@@ -1,5 +1,6 @@
 import { _warning } from "azure-pipelines-task-lib/internal";
 import {
+  AzLib,
   DestType,
   set,
   setContentHandles,
@@ -161,7 +162,8 @@ export const executeScript = async (
 
 export const execute = async (
   parsedQueries: ParsedQuery[],
-  evaluateScript: (script: string, query: ParsedQuery) => Promise<any>
+  evaluateScript: (script: string, query: ParsedQuery) => Promise<any>,
+  azlib: AzLib
 ) => {
   for (const { kind, target, query, pipes } of parsedQueries) {
     const q = query.trim();
@@ -172,6 +174,6 @@ export const execute = async (
       _warning(`Script '${query}' has not results!`);
       continue;
     }
-    await set(`${kind}://${target}`, result);
+    await set(`${kind}://${target}`, result, azlib);
   }
 };

@@ -3,9 +3,11 @@ import { getRuntimePath } from "../RuntimeUtil";
 import { execute, executeScript, parse, parseScript } from "../InlineScripts";
 import { json } from "stream/consumers";
 import * as os from "node:os";
-import * as fs from "node:fs";
+import { setVariable } from 'azure-pipelines-task-lib'
+import { writeFileSync } from "node:fs";
 
 import {
+  AzLib,
   get,
   getContentHandles,
   set,
@@ -16,7 +18,13 @@ import path = require("path");
 
 const tempFile = path.resolve(os.tmpdir(), "teste.txt");
 
-fs.writeFileSync(tempFile, "sample data");
+writeFileSync(tempFile, "sample data");
+
+const azlib: AzLib = {
+  console,
+  writeFileSync,
+  setVariable
+}
 
 describe(`ParamsUtils Suite`, () => {
   it("parseInput", async () => {
@@ -157,7 +165,8 @@ describe("InlineScripts Suite", () => {
       counter += 1;
       // console.log(_parsedQuery);
       return `EXECUTED: ${query}`;
-    });
+    },
+    azlib);
     assert(counter === queries.length);
   });
 });
@@ -194,11 +203,11 @@ describe("SourceContent Suite", () => {
     // ]);
     const results = [];
 
-    results.push(await setHandles.file(tempFile, undefined, ""));
-    results.push(await setHandles.var("teste", undefined, ""));
-    results.push(await setHandles.out("teste", undefined, ""));
-    results.push(await setHandles.secret("teste", undefined, ""));
-    results.push(await setHandles.echo("", undefined, ""));
+    results.push(await setHandles.file(tempFile, undefined, "", azlib));
+    results.push(await setHandles.var("teste", undefined, "", azlib));
+    results.push(await setHandles.out("teste", undefined, "", azlib));
+    results.push(await setHandles.secret("teste", undefined, "", azlib));
+    results.push(await setHandles.echo("", undefined, "", azlib));
     // setHandles.http("https://www.google.com", undefined, ""),
     // setHandles.https("https://www.google.com", undefined, ""),
 
@@ -217,10 +226,10 @@ describe("SourceContent Suite", () => {
 
   it("set", async () => {
     const result = await Promise.all([
-      set("var://MY_VAR_NAME", ""),
-      set(`file://${tempFile}`, ""),
+      set("var://MY_VAR_NAME", "", azlib),
+      set(`file://${tempFile}`, "", azlib),
       // set("https://www.google.com", ""),
-      set("echo", "my raw any string without protocol reference"),
+      set("echo", "my raw any string without protocol reference", azlib),
     ]);
     assert(result);
   });
