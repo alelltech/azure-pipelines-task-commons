@@ -2,13 +2,14 @@
   "compilerOptions": {
     "outDir": "./dist",
     "sourceRoot": "./src/",
-    "module": "commonjs",
+    "module": "CommonJS",
+    "declaration": true,
     "target": "es6",
-    "sourceMap": true,
     // "strict": true,
     "strictNullChecks": false,
     "removeComments": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["**/tests/*"]
+  "include": ["**/*.ts"],
+  "exclude": ["**/tests", "**/node_modules"]
 }
