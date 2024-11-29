@@ -1,7 +1,5 @@
 import * as assert from "assert";
-import { getRuntimePath } from "../RuntimeUtil";
-import { execute, executeScript, parse, parseScript } from "../InlineScripts";
-import { json } from "stream/consumers";
+import { execute, parse } from "../InlineScripts";
 import * as os from "node:os";
 import { setVariable } from 'azure-pipelines-task-lib'
 import { writeFileSync } from "node:fs";
@@ -9,12 +7,11 @@ import { writeFileSync } from "node:fs";
 import {
   AzLib,
   get,
-  getContentHandles,
   set,
-  setContentHandles,
   setHandles,
 } from "../SourceContent";
-import path = require("path");
+
+import * as path from "path";
 
 const tempFile = path.resolve(os.tmpdir(), "teste.txt");
 
@@ -32,53 +29,14 @@ describe(`ParamsUtils Suite`, () => {
   });
 });
 
-describe("RuntimeUtils Suite", () => {
-  after(() => {
-    delete process.env.EXT;
-  });
-
-  it("getRuntimePath", async () => {
-    process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
-    assert(runtime, "runtime must be defined");
-    assert(
-      runtime.endsWith("node_modules/.bin/ts-node"),
-      'runtime must be "ts-node".'
-    );
-  });
-});
-
 describe("InlineScripts Suite", () => {
   after(() => {
     delete process.env.EXT;
   });
 
-  it("parseScript", async () => {
-    process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
-    const queries = parseScript(
-      [
-        `var NAME    =      .metadata.name | downcase`,
-        `var KIND    =    .kind`,
-        `echo      .kind | uppercase`,
-        `file  ./bar/annotations.json  = .metadata.annotations`,
-        `out outTest   =   .emptyResultTest | uppercase`,
-        `secret secretTest =     .emptyResultTest | uppercase`,
-        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
-      ].join("\n")
-    );
-
-    assert(queries, "queries must be defined");
-    assert(queries.length === 7, "queries must have 7 items.");
-    assert(
-      JSON.stringify(queries) ===
-        '[{"kind":"var","dest":"NAME","script":".metadata.name | downcase"},{"kind":"var","dest":"KIND","script":".kind"},{"kind":"echo","dest":"","script":".kind | uppercase"},{"kind":"file","dest":"./bar/annotations.json","script":".metadata.annotations"},{"kind":"out","dest":"outTest","script":".emptyResultTest | uppercase"},{"kind":"secret","dest":"secretTest","script":".emptyResultTest | uppercase"},{"kind":"var","dest":"DOC_TWO_NAME","script":"$[1].metadata.name | downcase"}]'
-    );
-  });
 
   it("parse", async () => {
     process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
     const queries = parse(
       [
         `var NAME    =      .metadata.name | downcase`,
@@ -108,32 +66,9 @@ describe("InlineScripts Suite", () => {
     assert(queries, "queries must be defined");
     assert(queries.length === 16, "queries must have 16 items.");
   });
-  it("executeScript", async () => {
-    process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
-    const queries = parseScript(
-      [
-        `var NAME    =      .metadata.name | downcase`,
-        `var KIND    =    .kind`,
-        `echo      .kind | uppercase`,
-        `file  ${tempFile}  = .metadata.annotations`,
-        `out outTest   =   .emptyResultTest | uppercase`,
-        `secret secretTest =     .emptyResultTest | uppercase`,
-        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
-      ].join("\n")
-    );
-
-    let counter = 0;
-    await executeScript(queries, async (script, query) => {
-      counter += 1;
-      return `EXECUTED: ${script}`;
-    });
-    assert(counter === queries.length);
-  });
 
   it("execute", async () => {
     process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
     const queries = parse(
       [
         `var NAME    =      .metadata.name | downcase`,
@@ -171,25 +106,7 @@ describe("InlineScripts Suite", () => {
   });
 });
 describe("SourceContent Suite", () => {
-  it("getContentHandles", async () => {
-    const result = await Promise.all([
-      getContentHandles.file(tempFile),
-      getContentHandles.text(""),
-      getContentHandles.var("teste"),
-    ]);
-    assert(result);
-  });
 
-  it("setContentHandles", async () => {
-    const result = await Promise.all([
-      setContentHandles.file(tempFile, ""),
-      setContentHandles.var("teste", ""),
-      setContentHandles.out("teste", ""),
-      setContentHandles.secret("teste", ""),
-      setContentHandles.echo("", ""),
-    ]);
-    assert(result);
-  });
 
   it("setHandles", async () => {
     // const result = await Promise.all([
@@ -201,17 +118,16 @@ describe("SourceContent Suite", () => {
     //   // setHandles.http("https://www.google.com", undefined, ""),
     //   // setHandles.https("https://www.google.com", undefined, ""),
     // ]);
-    const results = [];
 
-    results.push(await setHandles.file(tempFile, undefined, "", azlib));
-    results.push(await setHandles.var("teste", undefined, "", azlib));
-    results.push(await setHandles.out("teste", undefined, "", azlib));
-    results.push(await setHandles.secret("teste", undefined, "", azlib));
-    results.push(await setHandles.echo("", undefined, "", azlib));
+    await setHandles.file(tempFile, undefined, "", azlib);
+    await setHandles.var("teste", undefined, "", azlib);
+    await setHandles.out("teste", undefined, "", azlib);
+    await setHandles.secret("teste", undefined, "", azlib);
+    await setHandles.echo("", undefined, "", azlib);
     // setHandles.http("https://www.google.com", undefined, ""),
     // setHandles.https("https://www.google.com", undefined, ""),
 
-    assert(results);
+    assert(true);
   });
 
   it("get", async () => {

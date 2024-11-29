@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "ES6",
+    "outDir": "./dist",
+    "sourceRoot": "./src/",
     "module": "commonjs",
+    "target": "es6",
     "sourceMap": true,
-    "declaration": true
-  }
+    // "strict": true,
+    "strictNullChecks": false,
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["**/tests/*"]
 }

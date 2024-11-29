@@ -1,8 +1,7 @@
 import { getVariable, setVariable, warning } from "azure-pipelines-task-lib";
 import { readFileSync, writeFileSync } from "fs";
-import path = require("path");
-import axios from "axios";
-import { Agent } from "http";
+import * as path from "path";
+import fetcher from "axios";
 
 /**
  * @deprecated use {@link GetProtocols}
@@ -23,18 +22,6 @@ export type SetProtocols =
   | "http"
   | "https";
 
-/**
- * @deprecated use {@link getHandles}
- */
-export const getContentHandles: Record<
-  SourceType,
-  (source: string) => Promise<string>
-> = {
-  file: (file) => Promise.resolve(readFileSync(file).toString("utf-8")),
-  var: (varname) => Promise.resolve(getVariable(varname) ?? ""),
-  text: (content) => Promise.resolve(content),
-};
-
 export const getHandles: Record<
   GetProtocols,
   (sourceUri: string, parsedUrl: URL) => Promise<string>
@@ -47,38 +34,21 @@ export const getHandles: Record<
     ),
   var: (varname, parsed) => Promise.resolve(getVariable(parsed.hostname) ?? ""),
   http: async (url, parsed) => {
-    const res = await axios.get(parsed.toString(), {
-      timeout: 1000,
-      transformResponse: (x) => x,
+    const res = await fetcher(parsed.toString(), {
+      method: "GET",
       validateStatus: () => true,
+      transformResponse: (x) => x,
     });
     return res.data;
   },
   https: async (url, parsed) => {
-    const res = await axios.get(parsed.toString(), {
-      timeout: 1000,
-      transformResponse: (x) => x,
+    const res = await fetcher(parsed.toString(), {
+      method: "GET",
       validateStatus: () => true,
+      transformResponse: (x) => x,
     });
     return res.data;
   },
-};
-
-/**
- * @deprecated @see {@link setHandles}
- */
-export const setContentHandles: Record<
-  DestType,
-  (dest: string, content: Buffer | string) => Promise<void>
-> = {
-  file: (file, content) => Promise.resolve(writeFileSync(file, content)),
-  var: (varname, value) =>
-    Promise.resolve(setVariable(varname, value.toString("utf-8"))),
-  out: (varname, value) =>
-    Promise.resolve(setVariable(varname, value.toString("utf-8"), false, true)),
-  secret: (varname, value) =>
-    Promise.resolve(setVariable(varname, value.toString("utf-8"), true, false)),
-  echo: (_, content) => Promise.resolve(console.log(content.toString("utf-8"))),
 };
 
 export type AzLib = {
@@ -111,34 +81,23 @@ export const setHandles: Record<
     azlib.console.log(content.toString("utf-8"))
   },
   http: async (url, parsed) => {
-    const res = await axios.post(url, {
-      timeout: 1000,
+    const res = await fetcher(url, {
+      method: "POST",
+      validateStatus: () => true,
+      transformResponse: (x) => x,
     });
-    return res.data;
+    // return res.text();
   },
   https: async (url, parsed) => {
-    const res = await axios.post(url, {
-      timeout: 1000,
+    const res = await fetcher(url, {
+      method: "POST",
+      validateStatus: () => true,
+      transformResponse: (x) => x,
     });
-    return res.data;
+    // return res.text();
   },
 };
 
-/**
- * @deprecated @see {@link get}
- * @param sourceType
- * @param source
- * @returns
- */
-export const getContent = (sourceType: SourceType, source: string) => {
-  const handle = getContentHandles[sourceType] ?? getContentHandles.text;
-  if (handle == getContentHandles.text && sourceType != "text") {
-    warning(
-      `Source Type '${sourceType}' is not implemented, using default 'text'.`
-    );
-  }
-  return handle(source);
-};
 
 /**
  *
@@ -182,26 +141,6 @@ export const get = async (sourceUri: string): Promise<string> => {
     // DO NOT SEND TOO MANY WARNINGS
     return Promise.resolve(sourceUri);
   }
-};
-
-/**
- * @deprecated
- * @param destType
- * @param dest
- * @param content
- */
-export const setContent = async (
-  destType: DestType,
-  dest: string,
-  content: Buffer | string
-) => {
-  const handle = setContentHandles[destType] ?? getContentHandles.text;
-  if (setContent == setContentHandles.echo && destType != "echo") {
-    warning(
-      `Destination Type '${destType}' is not implemented, using default 'text'.`
-    );
-  }
-  await handle(dest, content);
 };
 
 /**
