@@ -1,8 +1,17 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "ES6",
+    "outDir": "./dist",
+    "sourceRoot": "./src/",
     "module": "commonjs",
-    "declaration": true
-  }
+    "target": "es6",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    // "strict": true,
+    "strictNullChecks": false,
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["**/tests"]
 }

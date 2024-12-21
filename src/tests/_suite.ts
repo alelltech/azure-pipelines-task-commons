@@ -1,4 +1,5 @@
-import * as assert from "assert";
+import "mocha";
+import assert from "assert";
 import { getRuntimePath } from "../RuntimeUtil";
 import { execute, executeScript, parse, parseScript } from "../InlineScripts";
 import { json } from "stream/consumers";
@@ -14,7 +15,7 @@ import {
   setContentHandles,
   setHandles,
 } from "../SourceContent";
-import path = require("path");
+import * as path from "path";
 
 const tempFile = path.resolve(os.tmpdir(), "teste.txt");
 
@@ -192,26 +193,16 @@ describe("SourceContent Suite", () => {
   });
 
   it("setHandles", async () => {
-    // const result = await Promise.all([
-    //   setHandles.file(tempFile, undefined, ""),
-    //   setHandles.var("teste", undefined, ""),
-    //   setHandles.out("teste", undefined, ""),
-    //   setHandles.secret("teste", undefined, ""),
-    //   setHandles.echo("", undefined, ""),
-    //   // setHandles.http("https://www.google.com", undefined, ""),
-    //   // setHandles.https("https://www.google.com", undefined, ""),
-    // ]);
-    const results = [];
 
-    results.push(await setHandles.file(tempFile, undefined, "", azlib));
-    results.push(await setHandles.var("teste", undefined, "", azlib));
-    results.push(await setHandles.out("teste", undefined, "", azlib));
-    results.push(await setHandles.secret("teste", undefined, "", azlib));
-    results.push(await setHandles.echo("", undefined, "", azlib));
+    await setHandles.file(tempFile, undefined, "", azlib);
+    await setHandles.var("teste", undefined, "", azlib);
+    await setHandles.out("teste", undefined, "", azlib);
+    await setHandles.secret("teste", undefined, "", azlib);
+    await setHandles.echo("", undefined, "", azlib);
     // setHandles.http("https://www.google.com", undefined, ""),
     // setHandles.https("https://www.google.com", undefined, ""),
 
-    assert(results);
+    assert(true);
   });
 
   it("get", async () => {
@@ -231,6 +222,6 @@ describe("SourceContent Suite", () => {
       // set("https://www.google.com", ""),
       set("echo", "my raw any string without protocol reference", azlib),
     ]);
-    assert(result);
+    assert(result, "");
   });
 });
