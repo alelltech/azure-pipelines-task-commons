@@ -1,6 +1,6 @@
 {
   "name": "@alell/azure-pipelines-task-commons",
-  "version": "2.2.19",
+  "version": "2.2.20",
   "author": "Alan S. Ferreira",
   "description": "Commons functions for azure pipelines custom tasks",
   "license": "MIT",
@@ -20,17 +20,23 @@
     "clean": "git clean -fdX",
     "release": "standard-version -a --releaseCommitMessageFormat \"chore(release): {{currentTag}}\" ",
     "release:full": "npm run release && npm i && git add . && git commit --reuse-message=HEAD && git push --follow-tags",
-    "compile": "tsc",
+    "build": "tsc",
     "debug": "ts-node ",
     "debug:test": "mocha --require ts-node/register ",
-    "test": "tsc && mocha **/_suite.js",
-    "coverage": "tsc && nyc --reporter=html --reporter=text --reporter=cobertura mocha --reporter mocha-junit-reporter **/_suite.js"
+    "test": "mocha --require ts-node/register **/_suite.ts",
+    "coverage": "nyc --reporter=html --reporter=text --reporter=cobertura mocha --require ts-node/register --reporter mocha-junit-reporter **/_suite.ts"
   },
   "dependencies": {
     "axios": "^1.7.8",
-    "azure-pipelines-task-lib": "^4.17.3"
+    "azure-pipelines-task-lib": "^4.17.3",
+    "semver": "^5.7.0",
+    "semver-compare": "^1.0.0",
+    "typed-rest-client": "^1.8.6",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/semver-compare": "1.0.3",
+    "@types/uuid": "10.0.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.5",
     "@types/sinon": "^17.0.3",
