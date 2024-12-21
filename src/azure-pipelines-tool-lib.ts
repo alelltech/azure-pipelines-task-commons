@@ -20,11 +20,6 @@ let requestOptions = {
     allowRetries: true,
     maxRetries: 2
 } as ifm.IRequestOptions;
-tl.setResourcePath(path.join(__dirname, 'lib.json'));
-
-export function debug(message: string): void {
-    tl.debug(message);
-}
 
 export function prependPath(toolPath: string) {
     tl.assertAgent('2.115.0');
