@@ -5,10 +5,9 @@ import * as os from 'os';
 import * as process from 'process';
 import * as fs from 'fs';
 import * as semver from 'semver';
-import * as tl from 'azure-pipelines-task-lib/task';
-import * as trm from 'azure-pipelines-task-lib/toolrunner';
+import * as tl from 'azure-pipelines-task-lib';
 import cmp from 'semver-compare';
-import * as uuidV4 from 'uuid/v4';
+import { v4 } from 'uuid';
 
 let pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json')).toString('utf-8'));
 let userAgent = 'vsts-task-installer/' + pkg.version;
@@ -203,7 +202,7 @@ export async function downloadTool(
             handlers = handlers || null;
             let http: httpm.HttpClient = new httpm.HttpClient(userAgent, handlers, requestOptions);
             tl.debug(fileName);
-            fileName = fileName || uuidV4();
+            fileName = fileName || v4();
 
             // check if it's an absolute path already
             var destPath: string;
@@ -496,7 +495,7 @@ export async function extract7z(file: string, dest?: string, _7zPath?: string, o
 
         if (_7zPath) {
             // extract
-            const _7z: trm.ToolRunner = tl.tool(_7zPath);
+            const _7z = tl.tool(_7zPath);
             if (overwriteDest) {
                 _7z.arg('-aoa');
             }
@@ -516,7 +515,7 @@ export async function extract7z(file: string, dest?: string, _7zPath?: string, o
             const overrideDestDirectory: number = overwriteDest ? 1 : 0;
             const command: string = `& '${escapedScript}' -Source '${escapedFile}' -Target '${escapedTarget}' -OverrideDestDirectory ${overrideDestDirectory}`;
             let powershellPath = tl.which('powershell', true);
-            let powershell: trm.ToolRunner = tl.tool(powershellPath)
+            let powershell = tl.tool(powershellPath)
                 .line('-NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command')
                 .arg(command);
             powershell.on('stdout', (buffer: Buffer) => {
@@ -525,7 +524,7 @@ export async function extract7z(file: string, dest?: string, _7zPath?: string, o
             powershell.on('stderr', (buffer: Buffer) => {
                 process.stderr.write(buffer);
             });
-            await powershell.exec(<trm.IExecOptions>{ silent: true });
+            await powershell.exec({ silent: true });
         }
     }
     finally {
@@ -553,7 +552,7 @@ export async function extractTar(file: string, destination?: string): Promise<st
     console.log(`Extracting archive`);
     let dest = _createExtractFolder(destination);
 
-    let tr: trm.ToolRunner = tl.tool('tar');
+    let tr = tl.tool('tar');
     tr.arg(['xC', dest, '-f', file]);
 
     await tr.exec();
@@ -580,15 +579,15 @@ export async function extractZip(file: string, destination?: string): Promise<st
         await tl.exec(chcpPath, '65001');
 
         // run powershell
-        let powershell: trm.ToolRunner = tl.tool('powershell')
+        let powershell = tl.tool('powershell')
             .line('-NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command')
             .arg(command);
         await powershell.exec();
     }
     else {
-        let unzip: trm.ToolRunner = tl.tool('unzip')
+        let unzip = tl.tool('unzip')
             .arg(file);
-        await unzip.exec(<trm.IExecOptions>{ cwd: dest });
+        await unzip.exec({ cwd: dest });
     }
 
     return dest;
@@ -597,7 +596,7 @@ export async function extractZip(file: string, destination?: string): Promise<st
 function _createExtractFolder(dest?: string): string {
     if (!dest) {
         // create a temp dir
-        dest = path.join(_getAgentTemp(), uuidV4());
+        dest = path.join(_getAgentTemp(), v4());
     }
 
     tl.mkdirP(dest);
