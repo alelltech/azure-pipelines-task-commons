@@ -1,6 +1,6 @@
 {
   "name": "@alell/azure-pipelines-task-commons",
-  "version": "2.2.25",
+  "version": "2.2.26",
   "author": "Alan S. Ferreira",
   "description": "Commons functions for azure pipelines custom tasks",
   "license": "MIT",
@@ -35,6 +35,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/semver": "7.5.8",
     "@types/semver-compare": "1.0.3",
     "@types/uuid": "10.0.0",
     "@types/mocha": "^10.0.6",
