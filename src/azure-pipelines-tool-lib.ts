@@ -9,8 +9,9 @@ import * as tl from 'azure-pipelines-task-lib';
 import cmp from 'semver-compare';
 import { v4 } from 'uuid';
 
-let pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json')).toString('utf-8'));
-let userAgent = 'vsts-task-installer/' + pkg.version;
+// let pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json')).toString('utf-8'));
+// let userAgent = 'vsts-task-installer/' + pkg.version;
+let userAgent = 'vsts-task-installer/2.0.7';
 let requestOptions = {
     // ignoreSslError: true,
     proxy: tl.getHttpProxyConfiguration(),
