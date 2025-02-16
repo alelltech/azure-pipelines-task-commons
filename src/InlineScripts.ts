@@ -1,4 +1,14 @@
-import { _warning } from "azure-pipelines-task-lib/internal";
+import { Environment } from "nunjucks";
+import bind from "nunjucks-steroids";
+
+export const _env = bind(
+  new Environment(null, {
+    tags: {
+      variableStart: '{{'
+    },
+  })
+) as Environment;
+
 import {
   AzLib,
   DestType,
@@ -153,7 +163,7 @@ export const executeScript = async (
 
     const result = await resolveScript(p, { kind, dest, script });
     if (!result) {
-      _warning(`Script '${script}' has not results!`);
+      console.warn(`Script '${script}' has not results!`);
       continue;
     }
     execQuery(dest, result, p);
@@ -169,9 +179,19 @@ export const execute = async (
     const q = query.trim();
 
     console.debug(`${kind}://${target} = ${q}`);
-    const result = await evaluateScript(q, { kind, target, query: q, pipes });
+    let result = await evaluateScript(q, { kind, target, query: q, pipes });
+
+    if(pipes && pipes.length > 0) {
+      try {
+        result = _env.renderString(`{{ result | ${pipes.join('|')} }}`, {result})
+      } catch (error) {
+        console.error(`Pipes execution error from ${pipes.join('|')}:`)
+        console.error(error);
+      }
+    }
+
     if (!result) {
-      _warning(`Script '${query}' has not results!`);
+      console.warn(`Script '${query}' has not results!`);
       continue;
     }
     await set(`${kind}://${target}`, result, azlib);
