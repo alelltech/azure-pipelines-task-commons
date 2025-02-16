@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.33](https://github.com/alelltech/azure-pipelines-task-commons/compare/v2.2.32...v2.2.33) (2025-02-16)
+
+
+### Others
+
+* **release:** 2.2.32 ([f97d369](https://github.com/alelltech/azure-pipelines-task-commons/commit/f97d369226fbc5885b6d5148d5ee72b029187ba5))
+
 ### [2.2.32](https://github.com/alelltech/azure-pipelines-task-commons/compare/v2.2.31...v2.2.32) (2025-02-16)
 
 

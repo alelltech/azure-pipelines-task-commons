@@ -1,6 +1,6 @@
 {
   "name": "@alell/azure-pipelines-task-commons",
-  "version": "2.2.32",
+  "version": "2.2.33",
   "author": "Alan S. Ferreira",
   "description": "Commons functions for azure pipelines custom tasks",
   "license": "MIT",
@@ -32,9 +32,12 @@
     "semver": "^5.7.0",
     "semver-compare": "^1.0.0",
     "typed-rest-client": "^1.8.6",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "nunjucks": "3.2.4",
+    "nunjucks-steroids": "1.2.2"
   },
   "devDependencies": {
+    "@types/nunjucks": "3.2.6",
     "@types/semver": "7.5.8",
     "@types/semver-compare": "1.0.3",
     "@types/uuid": "10.0.0",
