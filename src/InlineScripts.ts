@@ -177,17 +177,17 @@ export const execute = async (
   evaluateScript: (script: string, query: ParsedQuery) => Promise<any>,
   azlib: AzLib
 ) => {
-  for (const { kind, target, query, pipes } of parsedQueries) {
+  for (const { kind, target, query, pipes, pipesScript } of parsedQueries) {
     const q = query.trim();
 
     console.debug(`${kind}://${target} = ${q}`);
     let result = await evaluateScript(q, { kind, target, query: q, pipes });
 
-    if(pipes && pipes.length > 0) {
+    if(pipesScript) {
       try {
-        result = _env.renderString(`{{ result | ${pipes.join('|')} }}`, {result})
+        result = _env.renderString(`{{ result | ${pipesScript.substring(1)} }}`, {result})
       } catch (error) {
-        console.error(`Pipes execution error from ${pipes.join('|')}:`)
+        console.error(`Pipes execution error from ${pipesScript.substring(1)}:`)
         console.error(error);
       }
     }

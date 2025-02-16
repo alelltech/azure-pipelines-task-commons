@@ -57,13 +57,13 @@ describe("InlineScripts Suite", () => {
     process.env.EXT = "ts";
     const queries = parseScript(
       [
-        `var NAME    =      .metadata.name | downcase`,
+        `var NAME    =      .metadata.name | lower`,
         `var KIND    =    .kind`,
-        `echo      .kind | uppercase`,
+        `echo      .kind | upper`,
         `file  ./bar/annotations.json  = .metadata.annotations`,
-        `out outTest   =   .emptyResultTest | uppercase`,
-        `secret secretTest =     .emptyResultTest | uppercase`,
-        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
+        `out outTest   =   .emptyResultTest | upper`,
+        `secret secretTest =     .emptyResultTest | upper`,
+        `var DOC_TWO_NAME    =      $[1].metadata.name | lower`,
       ].join("\n")
     );
 
@@ -71,7 +71,7 @@ describe("InlineScripts Suite", () => {
     assert(queries.length === 7, "queries must have 7 items.");
     assert(
       JSON.stringify(queries) ===
-        '[{"kind":"var","dest":"NAME","script":".metadata.name | downcase"},{"kind":"var","dest":"KIND","script":".kind"},{"kind":"echo","dest":"","script":".kind | uppercase"},{"kind":"file","dest":"./bar/annotations.json","script":".metadata.annotations"},{"kind":"out","dest":"outTest","script":".emptyResultTest | uppercase"},{"kind":"secret","dest":"secretTest","script":".emptyResultTest | uppercase"},{"kind":"var","dest":"DOC_TWO_NAME","script":"$[1].metadata.name | downcase"}]'
+        '[{"kind":"var","dest":"NAME","script":".metadata.name | lower"},{"kind":"var","dest":"KIND","script":".kind"},{"kind":"echo","dest":"","script":".kind | upper"},{"kind":"file","dest":"./bar/annotations.json","script":".metadata.annotations"},{"kind":"out","dest":"outTest","script":".emptyResultTest | upper"},{"kind":"secret","dest":"secretTest","script":".emptyResultTest | upper"},{"kind":"var","dest":"DOC_TWO_NAME","script":"$[1].metadata.name | lower"}]'
     );
   });
 
@@ -79,15 +79,15 @@ describe("InlineScripts Suite", () => {
     process.env.EXT = "ts";
     const queries = parse(
       [
-        `var NAME    =      .metadata.name | downcase`,
+        `var NAME    =      .metadata.name | lower`,
         `var KIND    =    .kind`,
-        `echo      .kind | uppercase`,
+        `echo      .kind | upper`,
         `file  ./bar/annotations.json  = .metadata.annotations`,
-        `out outTest   =   .emptyResultTest | uppercase`,
-        `secret secretTest =     .emptyResultTest | uppercase`,
-        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
+        `out outTest   =   .emptyResultTest | upper`,
+        `secret secretTest =     .emptyResultTest | upper`,
+        `var DOC_TWO_NAME    =      $[1].metadata.name | lower`,
         "# Extract results to variables",
-        "var NAME = .metadata.name | downcase",
+        "var NAME = .metadata.name | lower",
         "var KIND = .kind",
         "",
         "# Extract results to variables with ;isOutput=true flag",
@@ -110,13 +110,13 @@ describe("InlineScripts Suite", () => {
     process.env.EXT = "ts";
     const queries = parseScript(
       [
-        `var NAME    =      .metadata.name | downcase`,
+        `var NAME    =      .metadata.name | lower`,
         `var KIND    =    .kind`,
-        `echo      .kind | uppercase`,
+        `echo      .kind | upper`,
         `file  ${tempFile}  = .metadata.annotations`,
-        `out outTest   =   .emptyResultTest | uppercase`,
-        `secret secretTest =     .emptyResultTest | uppercase`,
-        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
+        `out outTest   =   .emptyResultTest | upper`,
+        `secret secretTest =     .emptyResultTest | upper`,
+        `var DOC_TWO_NAME    =      $[1].metadata.name | lower`,
       ].join("\n")
     );
 
@@ -132,15 +132,15 @@ describe("InlineScripts Suite", () => {
     process.env.EXT = "ts";
     const queries = parse(
       [
-        `var NAME    =      .metadata.name | downcase`,
+        `var NAME    =      .metadata.name | lower`,
         `var KIND    =    .kind`,
-        `echo      .kind | uppercase`,
+        `echo      .kind | upper`,
         `file  ${tempFile}  = .metadata.annotations`,
-        `out outTest   =   .emptyResultTest | uppercase`,
-        `secret secretTest =     .emptyResultTest | uppercase`,
-        `var DOC_TWO_NAME    =      $[1].metadata.name | downcase`,
+        `out outTest   =   .emptyResultTest | upper`,
+        `secret secretTest =     .emptyResultTest | upper`,
+        `var DOC_TWO_NAME    =      $[1].metadata.name | lower`,
         "# Extract results to variables",
-        "var NAME = .metadata.name | downcase",
+        "var NAME = .metadata.name | lower",
         "var KIND = .kind",
         "",
         "# Extract results to variables with ;isOutput=true flag",
