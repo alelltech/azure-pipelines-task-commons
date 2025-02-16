@@ -65,6 +65,7 @@ export function parse(fullScript: string): ParsedQuery[] {
       target,
       query,
       pipes: pipes.split("|").map((p) => p.trim()),
+      pipesScript: pipes
     });
   }
 
@@ -146,6 +147,7 @@ type ParsedQuery = {
   target: string;
   query: string;
   pipes: string[];
+  pipesScript?: string
 };
 
 /**

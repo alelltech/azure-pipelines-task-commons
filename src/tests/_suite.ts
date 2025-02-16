@@ -2,7 +2,6 @@ import "mocha";
 import assert from "assert";
 import { getRuntimePath } from "../RuntimeUtil";
 import { execute, executeScript, parse, parseScript } from "../InlineScripts";
-import { json } from "stream/consumers";
 import * as os from "node:os";
 import { setVariable } from 'azure-pipelines-task-lib'
 import { writeFileSync } from "node:fs";
@@ -56,7 +55,6 @@ describe("InlineScripts Suite", () => {
 
   it("parseScript", async () => {
     process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
     const queries = parseScript(
       [
         `var NAME    =      .metadata.name | downcase`,
@@ -79,7 +77,6 @@ describe("InlineScripts Suite", () => {
 
   it("parse", async () => {
     process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
     const queries = parse(
       [
         `var NAME    =      .metadata.name | downcase`,
@@ -111,7 +108,6 @@ describe("InlineScripts Suite", () => {
   });
   it("executeScript", async () => {
     process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
     const queries = parseScript(
       [
         `var NAME    =      .metadata.name | downcase`,
@@ -134,7 +130,6 @@ describe("InlineScripts Suite", () => {
 
   it("execute", async () => {
     process.env.EXT = "ts";
-    const runtime = getRuntimePath("");
     const queries = parse(
       [
         `var NAME    =      .metadata.name | downcase`,
