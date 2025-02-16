@@ -57,15 +57,23 @@ export function parse(fullScript: string): ParsedQuery[] {
   while ((m = defaultregex.exec(sanetizedScript)) !== null) {
     const kind = (m[1] || "").trim();
     const target: string = (m[2] || "").trim();
-    const query: string = (m[3] || "").trim();
-    const pipes: string = (m[5] || "").trim();
+    let query: string = (m[3] || "").trim();
+    // const pipes: string = (m[5] || "").trim();
 
+    const pipeIndex = query.indexOf('|');
+    let pipes = [];
+    let pipesScript = "";
+    if(pipeIndex > -1){
+      pipesScript = query.substring(pipeIndex + 1 );
+      pipes = pipesScript.split('|');
+      query = query.substring(0, pipeIndex);
+    }
     result.push({
       kind,
       target,
       query,
-      pipes: pipes.split("|").map((p) => p.trim()),
-      pipesScript: pipes
+      pipes,
+      pipesScript
     });
   }
 
@@ -181,7 +189,7 @@ export const execute = async (
     const q = query.trim();
 
     console.debug(`${kind}://${target} = ${q}`);
-    let result = await evaluateScript(q, { kind, target, query: q, pipes });
+    let result = await evaluateScript(q, { kind, target, query: q, pipes, pipesScript });
 
     if(pipesScript) {
       try {
