@@ -1,6 +1,6 @@
 {
   "name": "@alell/azure-pipelines-task-commons",
-  "version": "2.2.33",
+  "version": "2.2.34",
   "author": "Alan S. Ferreira",
   "description": "Commons functions for azure pipelines custom tasks",
   "license": "MIT",
