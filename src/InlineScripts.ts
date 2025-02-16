@@ -82,14 +82,24 @@ export function parse(fullScript: string): ParsedQuery[] {
   while ((m = echoregex.exec(sanetizedScript)) !== null) {
     const kind = (m[1] || "").trim();
     const target: string = "";
-    const script: string = (m[2] || "").trim();
-    const pipes: string = (m[4] || "").trim();
+    let query: string = (m[2] || "").trim();
+    // const pipes: string = (m[4] || "").trim();
+
+    const pipeIndex = query.indexOf('|');
+    let pipes = [];
+    let pipesScript = "";
+    if(pipeIndex > -1){
+      pipesScript = query.substring(pipeIndex + 1 );
+      pipes = pipesScript.split('|');
+      query = query.substring(0, pipeIndex);
+    }
 
     result.push({
       kind,
       target,
-      query: script,
-      pipes: pipes.split("|").map((p) => p.trim()),
+      query,
+      pipes,
+      pipesScript
     });
   }
 
@@ -98,14 +108,24 @@ export function parse(fullScript: string): ParsedQuery[] {
   while ((m = uriregex.exec(sanetizedScript)) !== null) {
     const kind = (m[3] || "").trim();
     const target: string = (m[4] || "").trim();
-    const script: string = (m[5] || "").trim();
-    const pipes: string = (m[7] || "").trim();
+    let query: string = (m[5] || "").trim();
+    // const pipes: string = (m[7] || "").trim();
+
+    const pipeIndex = query.indexOf('|');
+    let pipes = [];
+    let pipesScript = "";
+    if(pipeIndex > -1){
+      pipesScript = query.substring(pipeIndex + 1 );
+      pipes = pipesScript.split('|');
+      query = query.substring(0, pipeIndex);
+    }
 
     result.push({
       kind,
       target,
-      query: script,
-      pipes: pipes.split("|").map((p) => p.trim()),
+      query,
+      pipes,
+      pipesScript
     });
   }
 
