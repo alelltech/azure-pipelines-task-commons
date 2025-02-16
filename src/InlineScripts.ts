@@ -16,6 +16,7 @@ import {
   setContentHandles,
   SetProtocols,
 } from "./SourceContent";
+import { _warning } from "azure-pipelines-task-lib/internal";
 
 /**
  * @deprecated @see {@link parse}
@@ -193,7 +194,7 @@ export const executeScript = async (
 
     const result = await resolveScript(p, { kind, dest, script });
     if (!result) {
-      console.warn(`Script '${script}' has not results!`);
+      _warning(`Script '${script}' has not results!`);
       continue;
     }
     execQuery(dest, result, p);
@@ -221,7 +222,7 @@ export const execute = async (
     }
 
     if (!result) {
-      console.warn(`Script '${query}' has not results!`);
+      _warning(`Script '${query}' has not results!`);
       continue;
     }
     await set(`${kind}://${target}`, result, azlib);
